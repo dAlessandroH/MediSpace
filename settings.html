@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajustes - MedSpace</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <h1>MedSpace</h1>
+        <p>Configuracion personal</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="review.html">Repasar</a>
+      <a class="nav-link" href="import.html">Importar</a>
+      <a class="nav-link" href="manual.html">Crear tarjeta</a>
+      <a class="nav-link" href="dashboard.html">Progreso</a>
+      <a class="nav-link" href="planner.html">Plan y calendario</a>
+      <a class="nav-link active" href="settings.html">Ajustes</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h2>Ajustes</h2>
+        <p>Todo aqui esta pensado para tu estudio diario, tu TDAH y tu manera de aprender mejor con repeticion espaciada y bloques cortos.</p>
+      </div>
+    </header>
+
+    <section class="panel form-panel">
+      <div class="form-grid three">
+        <label><span>Tu nombre</span><input id="userName" type="text" /></label>
+        <label><span>Nuevas por dia</span><input id="dailyNewLimit" type="number" min="1" max="100" /></label>
+        <label><span>Meta diaria de repasos</span><input id="dailyTargetReviews" type="number" min="10" max="500" /></label>
+        <label><span>Examen en dias</span><input id="examDays" type="number" min="0" max="365" /></label>
+        <label><span>Rescate desde tropiezos</span><input id="rescueThreshold" type="number" min="1" max="20" /></label>
+        <label><span>Modo enfoque visual</span><select id="focusMode"><option value="true">Activado</option><option value="false">Desactivado</option></select></label>
+        <label><span>Pomodoro estudio</span><input id="pomodoroStudyMin" type="number" min="5" max="120" /></label>
+        <label><span>Pausa corta</span><input id="pomodoroShortBreak" type="number" min="1" max="30" /></label>
+        <label><span>Pausa larga</span><input id="pomodoroLongBreak" type="number" min="5" max="60" /></label>
+        <label><span>Ciclos antes de pausa larga</span><input id="pomodoroCycles" type="number" min="2" max="8" /></label>
+      </div>
+      <div class="notice info">
+        Nuevas por dia = no dejes que el material nuevo te aplaste.<br>
+        Meta diaria = cuantas tarjetas quieres cerrar al dia.<br>
+        Examen en dias = compresion manual general cuando ya andas cerca de examen.<br>
+        Rescate = a partir de cuantas veces una tarjeta se pone insistente.<br>
+        Pomodoro = bloques cortos para estudiar con foco y pausas decentes.
+      </div>
+      <div class="toolbar wrap">
+        <button class="btn primary" id="saveSettingsBtn" type="button">Guardar ajustes</button>
+        <button class="btn" id="exportBackupBtn" type="button">Exportar respaldo</button>
+        <label class="btn" for="importBackupInput">Importar respaldo</label>
+        <input id="importBackupInput" type="file" accept="application/json" class="hidden" />
+        <button class="btn danger" id="clearAllBtn" type="button">Borrar todos los datos</button>
+      </div>
+      <div id="settingsStatus" class="notice hidden"></div>
+    </section>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear tarjeta - MedSpace</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <h1>MedSpace</h1>
+        <p>Crear tarjeta manual</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="review.html">Repasar</a>
+      <a class="nav-link" href="import.html">Importar CSV</a>
+      <a class="nav-link active" href="manual.html">Crear tarjeta</a>
+      <a class="nav-link" href="dashboard.html">Progreso</a>
+      <a class="nav-link" href="planner.html">Plan y calendario</a>
+      <a class="nav-link" href="settings.html">Ajustes</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h2>Crear tarjeta manual</h2>
+        <p>Ideal para convertir errores del día, apuntes rápidos o preguntas que sabes que deben volver más veces.</p>
+      </div>
+    </header>
+
+    <section class="panel form-panel">
+      <div class="form-grid three">
+        <label>
+          <span>Deck</span>
+          <select id="deckSelect"></select>
+        </label>
+        <label>
+          <span>Nuevo deck opcional</span>
+          <input id="newDeckName" type="text" placeholder="Si quieres crear uno nuevo" />
+        </label>
+        <label>
+          <span>Materia</span>
+          <input id="newDeckSubject" type="text" placeholder="Ej. Anatomia" />
+        </label>
+      </div>
+
+      <label>
+        <span>Pregunta</span>
+        <textarea id="questionInput" rows="4" placeholder="Escribe la pregunta como si fueras a examinarte mañana"></textarea>
+      </label>
+
+      <div class="form-grid">
+        <label><span>Opcion A</span><input id="optionAInput" type="text" /></label>
+        <label><span>Opcion B</span><input id="optionBInput" type="text" /></label>
+      </div>
+      <div class="form-grid">
+        <label><span>Opcion C</span><input id="optionCInput" type="text" /></label>
+        <label><span>Opcion D</span><input id="optionDInput" type="text" /></label>
+      </div>
+
+      <div class="form-grid three">
+        <label>
+          <span>Respuesta correcta</span>
+          <select id="correctAnswerInput">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </label>
+        <label>
+          <span>Categoria</span>
+          <input id="categoryInput" type="text" placeholder="Ej. Corazon" />
+        </label>
+        <label>
+          <span>Prioridad</span>
+          <select id="priorityInput">
+            <option value="1">Baja</option>
+            <option value="2">Media</option>
+            <option value="3">Alta</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        <span>Explicacion</span>
+        <textarea id="explanationInput" rows="4" placeholder="Explica por que la respuesta es correcta"></textarea>
+      </label>
+
+      <div class="toolbar wrap">
+        <button class="btn primary" id="saveCardBtn" type="button">Guardar tarjeta</button>
+      </div>
+      <div id="manualStatus" class="notice hidden"></div>
+    </section>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/manual.js"></script>
+</body>
+</html>

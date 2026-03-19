@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedSpace</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>MedSpace</h1>
+      <p>Tu sistema personal de repeticion espaciada para medicina</p>
+    </div>
+    <nav class="topnav">
+      <a href="index.html">Inicio</a>
+      <a href="review.html">Repasar</a>
+      <a href="import.html">Importar</a>
+      <a href="dashboard.html">Progreso</a>
+      <a href="planner.html">Plan y calendario</a>
+      <a href="settings.html">Ajustes</a>
+    </nav>
+  </header>
+
+  <main class="container wide">
+    <section class="card hero">
+      <div class="hero-grid two-main">
+        <div>
+          <span class="eyebrow">Diseñada para ti</span>
+          <h2 id="heroTitle">Tu plan de hoy</h2>
+          <p class="muted" id="heroSubtitle">Primero estudia lo que toca hoy. Luego rescata lo que te cuesta. Luego mete pocas nuevas. Ese es el camino corto.</p>
+          <div class="actions">
+            <a class="btn primary" href="review.html?mode=focus">Empezar focus de hoy</a>
+            <a class="btn" href="planner.html">Ver calendario</a>
+            <a class="btn" href="import.html">Importar deck</a>
+          </div>
+        </div>
+        <div id="homeStats" class="grid-summary"></div>
+      </div>
+    </section>
+
+    <section class="grid-four-home">
+      <article class="card">
+        <div class="section-head">
+          <div>
+            <h3>Pomodoro de estudio</h3>
+            <p class="muted">Sin pelearte con sesiones larguisimas. Un bloque, una pausa, otra ronda.</p>
+          </div>
+        </div>
+        <div class="pomodoro-box">
+          <div class="pomodoro-ring">
+            <div id="pomodoroTime" class="pomodoro-time">25:00</div>
+            <div id="pomodoroPhase" class="muted">Enfoque</div>
+          </div>
+          <div class="pomodoro-controls">
+            <button class="btn primary" id="pomodoroToggleBtn" type="button">Iniciar</button>
+            <button class="btn" id="pomodoroResetBtn" type="button">Reiniciar</button>
+            <button class="btn" id="pomodoroSkipBtn" type="button">Siguiente fase</button>
+          </div>
+          <div class="mini-kpi" id="pomodoroTodayBox"></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="section-head">
+          <div>
+            <h3>Lo mas urgente</h3>
+            <p class="muted">Tus examenes cercanos y lo que conviene repasar antes de que el tiempo se ponga creativo.</p>
+          </div>
+        </div>
+        <div id="examUrgencyList" class="list compact"></div>
+      </article>
+
+      <article class="card">
+        <div class="section-head">
+          <div>
+            <h3>Tu mapa de hoy</h3>
+            <p class="muted">Lo digo claro: que te toca, que ya vas dominando y donde conviene meter energia.</p>
+          </div>
+        </div>
+        <div id="todayPlanBox" class="list compact"></div>
+      </article>
+          <article class="card">
+        <div class="section-head">
+          <div>
+            <h3>Pendientes de la universidad</h3>
+            <p class="muted">Solo para no olvidar entregas, pendientes y tareas rápidas.</p>
+          </div>
+          <div class="actions compact">
+            <a class="btn" href="planner.html">Ver todo</a>
+          </div>
+        </div>
+        <div id="taskQuickList" class="list compact"></div>
+      </article>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <div>
+          <h3>Calendario visual de estudio</h3>
+          <p class="muted">Pasado reciente y proximos dias. Cada bloque te dice cuanto te tocara repasar y si hay examen encima.</p>
+        </div>
+      </div>
+      <div id="calendarLegend" class="chip-row"></div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </section>
+
+    <section class="grid-two-home">
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h3>Decks</h3>
+            <p class="muted">Tus mazos, con pendientes, dominadas y tarjetas que se resisten.</p>
+          </div>
+          <div class="actions compact">
+            <input id="deckSearch" type="text" placeholder="Buscar deck o materia" />
+          </div>
+        </div>
+        <div id="deckList" class="deck-list"></div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h3>Materias que necesitan mas atencion</h3>
+            <p class="muted">No para culparte. Para decidir bien que estudiar primero.</p>
+          </div>
+        </div>
+        <div id="focusList" class="list"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

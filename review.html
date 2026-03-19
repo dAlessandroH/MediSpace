@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repaso - MedSpace</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <h1>MedSpace</h1>
+        <p>Sesion diaria</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link active" href="review.html">Repasar</a>
+      <a class="nav-link" href="import.html">Importar CSV</a>
+      <a class="nav-link" href="manual.html">Crear tarjeta</a>
+      <a class="nav-link" href="dashboard.html">Progreso</a>
+      <a class="nav-link" href="planner.html">Plan y calendario</a>
+      <a class="nav-link" href="settings.html">Ajustes</a>
+    </nav>
+
+    <section class="sidebar-card">
+      <h3>Filtros</h3>
+      <label class="mini-label">Deck</label>
+      <select id="deckFilter"></select>
+      <label class="mini-label">Modo</label>
+      <select id="modeFilter">
+        <option value="all">Todo</option>
+        <option value="focus">Solo lo importante de hoy</option>
+        <option value="rescue">Rescate</option>
+        <option value="new">Nuevas</option>
+      </select>
+      <button class="btn block" id="startSessionBtn" type="button">Actualizar sesion</button>
+    </section>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h2>Repaso inteligente</h2>
+        <p id="sessionSubtitle">Carga una sesion y responde. Aqui es donde la memoria deja de improvisar.</p>
+      </div>
+      <div class="header-actions">
+        <span class="pill" id="progressText">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="panel" id="emptyState">
+      <h3>No hay tarjetas para esta sesion</h3>
+      <p>Prueba con otro deck, cambia el modo o importa un CSV.</p>
+      <div class="toolbar wrap">
+        <a class="btn primary" href="import.html">Importar deck</a>
+        <a class="btn" href="index.html">Volver al inicio</a>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="reviewPanel">
+      <div class="review-meta">
+        <span class="tag" id="deckNameTag">Deck</span>
+        <span class="tag" id="cardCategory">Categoria</span>
+        <span class="tag" id="cardPriority">Prioridad</span>
+        <span class="tag" id="nextInfoTag">Pendiente</span>
+      </div>
+
+      <h3 class="question" id="questionText"></h3>
+      <div class="options" id="optionsContainer"></div>
+
+      <div class="notice info hidden" id="answerBlock">
+        <p><strong>Respuesta correcta:</strong> <span id="correctAnswerText"></span></p>
+        <p id="explanationText"></p>
+      </div>
+
+      <div class="toolbar wrap hidden" id="revealActions">
+        <button class="btn" id="showAnswerBtn" type="button">Mostrar respuesta</button>
+      </div>
+
+      <div class="rating-grid hidden" id="ratingActions">
+        <button class="btn danger rating-btn" data-rating="again" type="button"><strong>Otra vez</strong><small id="preview-again">Vuelve hoy</small></button>
+        <button class="btn warn rating-btn" data-rating="hard" type="button"><strong>Dificil</strong><small id="preview-hard">Vuelve pronto</small></button>
+        <button class="btn success rating-btn" data-rating="good" type="button"><strong>Bien</strong><small id="preview-good">Espaciado normal</small></button>
+        <button class="btn primary rating-btn" data-rating="easy" type="button"><strong>Facil</strong><small id="preview-easy">Se aleja mas</small></button>
+      </div>
+
+      <div class="notice info hidden" id="ratingHelp"></div>
+    </section>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/scheduler.js"></script>
+  <script src="js/review.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deck - MedSpace</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <h1>MedSpace</h1>
+        <p>Vista de deck</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="review.html">Repasar</a>
+      <a class="nav-link" href="import.html">Importar CSV</a>
+      <a class="nav-link" href="manual.html">Crear tarjeta</a>
+      <a class="nav-link" href="dashboard.html">Progreso</a>
+      <a class="nav-link" href="planner.html">Plan y calendario</a>
+      <a class="nav-link" href="settings.html">Ajustes</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h2 id="deckTitle">Deck</h2>
+        <p id="deckMeta">Cargando...</p>
+      </div>
+      <div class="header-actions wrap">
+        <button class="btn" id="resetDeckBtn" type="button">Reiniciar progreso</button>
+        <button class="btn danger" id="deleteDeckBtn" type="button">Eliminar deck</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Tarjetas</h3>
+        <input id="searchInput" type="text" placeholder="Buscar pregunta o categoria" />
+      </div>
+      <div id="deckCards" class="list"></div>
+    </section>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Progreso - MedSpace</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <h1>MedSpace</h1>
+        <p>Tu progreso explicado claro</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="review.html">Repasar</a>
+      <a class="nav-link" href="import.html">Importar CSV</a>
+      <a class="nav-link" href="manual.html">Crear tarjeta</a>
+      <a class="nav-link active" href="dashboard.html">Progreso</a>
+      <a class="nav-link" href="planner.html">Plan y calendario</a>
+      <a class="nav-link" href="settings.html">Ajustes</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h2>Progreso de estudio</h2>
+        <p>Aqui no hay terminos raros sin explicacion. Te digo que vas sosteniendo, que sigue frágil y donde te conviene insistir.</p>
+      </div>
+    </header>
+
+    <section class="stats-grid" id="dashboardStats"></section>
+
+    <section class="grid-two">
+      <article class="panel">
+        <div class="panel-head"><h3>Materias</h3></div>
+        <div id="categoryStats" class="list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><h3>Actividad reciente</h3></div>
+        <div id="recentReviews" class="list compact"></div>
+      </article>
+    </section>
+
+    <section class="grid-two">
+      <article class="panel">
+        <div class="panel-head"><h3>Ultimos 14 dias</h3></div>
+        <div id="activityCalendar" class="calendar-grid compact"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><h3>Proxima semana</h3></div>
+        <div id="forecastList" class="list compact"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plan y calendario - MedSpace</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <h1>MedSpace</h1>
+        <p>Plan personal de estudio</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="review.html">Repasar</a>
+      <a class="nav-link" href="import.html">Importar CSV</a>
+      <a class="nav-link" href="manual.html">Crear tarjeta</a>
+      <a class="nav-link" href="dashboard.html">Progreso</a>
+      <a class="nav-link active" href="planner.html">Plan y calendario</a>
+      <a class="nav-link" href="settings.html">Ajustes</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h2>Plan y calendario</h2>
+        <p>Tu calendario no es decorativo. Sirve para anticipar carga, colocar examenes y saber desde cuando te conviene apretar una materia.</p>
+      </div>
+    </header>
+
+    <section class="panel form-panel">
+      <div class="panel-head"><h3>Agregar examen</h3></div>
+      <div class="form-grid three">
+        <label><span>Materia</span><input id="examSubject" type="text" placeholder="Ej. Anatomia" /></label>
+        <label><span>Titulo</span><input id="examTitle" type="text" placeholder="Ej. Parcial de corazon" /></label>
+        <label><span>Fecha</span><input id="examDate" type="date" /></label>
+      </div>
+      <div class="toolbar wrap">
+        <button class="btn primary" id="saveExamBtn" type="button">Guardar examen</button>
+      </div>
+      <div id="plannerStatus" class="notice hidden"></div>
+    </section>
+
+    <section class="grid-two">
+      <article class="panel">
+        <div class="panel-head"><h3>Examenes programados</h3></div>
+        <div id="examList" class="list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><h3>Proximo plan de ataque</h3></div>
+        <div id="attackPlan" class="list compact"></div>
+      </article>
+    </section>
+
+
+
+    <section class="panel form-panel">
+      <div class="panel-head"><h3>Tareas y pendientes</h3></div>
+      <div class="form-grid three">
+        <label><span>Tarea</span><input id="taskTitle" type="text" placeholder="Ej. Entregar resumen de histo" /></label>
+        <label><span>Materia</span><input id="taskSubject" type="text" placeholder="Ej. Histologia" /></label>
+        <label><span>Fecha de entrega</span><input id="taskDate" type="date" /></label>
+      </div>
+      <div class="toolbar wrap">
+        <button class="btn primary" id="saveTaskBtn" type="button">Guardar tarea</button>
+      </div>
+      <div id="taskList" class="list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h3>Calendario de 28 dias</h3></div>
+      <div id="plannerCalendar" class="calendar-grid"></div>
+    </section>
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/planner.js"></script>
+</body>
+</html>
