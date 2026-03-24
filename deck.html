@@ -35,10 +35,38 @@
         <p id="deckMeta">Cargando...</p>
       </div>
       <div class="header-actions wrap">
+        <button class="btn" id="editDeckToggleBtn" type="button">Editar deck</button>
         <button class="btn" id="resetDeckBtn" type="button">Reiniciar progreso</button>
         <button class="btn danger" id="deleteDeckBtn" type="button">Eliminar deck</button>
       </div>
     </header>
+
+
+
+    <section class="panel hidden" id="editDeckPanel">
+      <div class="panel-head">
+        <h3>Editar deck o mazo</h3>
+        <button class="btn" id="cancelEditDeckBtn" type="button">Cerrar</button>
+      </div>
+      <form id="editDeckForm" class="form-grid">
+        <label>
+          <span>Nombre del deck</span>
+          <input id="editDeckName" type="text" maxlength="120" required />
+        </label>
+        <label>
+          <span>Materia</span>
+          <input id="editDeckSubject" type="text" maxlength="120" />
+        </label>
+        <label class="full-span" style="grid-column:1/-1;">
+          <span>Descripcion</span>
+          <textarea id="editDeckDescription" rows="4" placeholder="Opcional"></textarea>
+        </label>
+        <div class="item-actions" style="grid-column:1/-1;">
+          <button class="btn primary" type="submit">Guardar cambios</button>
+        </div>
+      </form>
+      <div id="editDeckStatus" class="notice info hidden"></div>
+    </section>
 
     <section class="panel">
       <div class="panel-head">

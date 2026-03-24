@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHome();
   bindSearch();
   bindPomodoro();
+  bindDeckActions();
   requestNotificationPermission();
   restorePomodoroTicker();
 });
@@ -96,10 +97,51 @@ function renderDecks(decks, cards, search = '') {
           <a class="btn" href="deck.html?id=${encodeURIComponent(deck.id)}">Abrir deck</a>
           ${examCount ? `<a class="btn primary" href="review.html?deck=${encodeURIComponent(deck.id)}">Simulador</a>` : ''}
           ${flashCount ? `<a class="btn success" href="flashcards.html?deck=${encodeURIComponent(deck.id)}">Flashcards</a>` : ''}
+          <button class="btn" type="button" data-action="rename-deck" data-deck-id="${escapeHtml(deck.id)}">Editar</button>
+          <button class="btn danger" type="button" data-action="delete-deck" data-deck-id="${escapeHtml(deck.id)}">Borrar</button>
         </div>
       </div>
     `;
   }).join('');
+}
+
+
+function bindDeckActions() {
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-action="rename-deck"], [data-action="delete-deck"]');
+    if (!button) return;
+    const deckId = button.dataset.deckId;
+    if (button.dataset.action === 'rename-deck') quickEditDeck(deckId);
+    if (button.dataset.action === 'delete-deck') quickDeleteDeck(deckId);
+  });
+}
+
+function quickEditDeck(deckId) {
+  const deck = getDeckById(deckId);
+  if (!deck) return;
+  const newName = prompt('Nuevo nombre del deck', deck.name || '');
+  if (newName === null) return;
+  const cleanName = newName.trim();
+  if (!cleanName) return alert('El nombre no puede quedar vacio.');
+  const newSubject = (prompt('Materia del deck', deck.subject || '') ?? (deck.subject || '')).trim();
+  const newDescription = (prompt('Descripcion corta del deck', deck.description || '') ?? (deck.description || '')).trim();
+  const decks = getDecks().map(item => item.id === deckId ? { ...item, name: cleanName, subject: newSubject, description: newDescription, updatedAt: nowISO() } : item);
+  saveDecks(decks);
+  renderHome();
+}
+
+function quickDeleteDeck(deckId) {
+  const deck = getDeckById(deckId);
+  if (!deck) return;
+  const cards = getCards();
+  const deckCards = cards.filter(card => card.deckId === deckId);
+  const ok = confirm(`Vas a borrar el deck "${deck.name}" con ${deckCards.length} tarjetas. Esta accion no se puede deshacer.`);
+  if (!ok) return;
+  const removedIds = new Set(deckCards.map(card => card.id));
+  saveDecks(getDecks().filter(item => item.id !== deckId));
+  saveCards(cards.filter(card => card.deckId !== deckId));
+  saveReviews(getReviews().filter(review => !removedIds.has(review.cardId)));
+  renderHome();
 }
 
 function renderFocusList(cards) {

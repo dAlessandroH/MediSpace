@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('searchInput')?.addEventListener('input', renderDeckCards);
   document.getElementById('resetDeckBtn')?.addEventListener('click', resetDeckProgress);
   document.getElementById('deleteDeckBtn')?.addEventListener('click', deleteDeck);
+  document.getElementById('editDeckToggleBtn')?.addEventListener('click', toggleEditDeckPanel);
+  document.getElementById('cancelEditDeckBtn')?.addEventListener('click', hideEditDeckPanel);
+  document.getElementById('editDeckForm')?.addEventListener('submit', saveDeckEdits);
 });
 
 function renderDeckPage() {
@@ -21,7 +24,51 @@ function renderDeckPage() {
   const flashCount = cards.filter(card => (card.type || 'multiple_choice') === 'flashcard').length;
   document.getElementById('deckTitle').textContent = deck.name;
   document.getElementById('deckMeta').textContent = `${deck.subject || 'Sin materia'} · ${cards.length} tarjetas · ${examCount} examen · ${flashCount} flashcards · creado ${formatDate(deck.createdAt)}`;
+  populateEditDeckForm(deck);
   renderDeckCards();
+}
+
+function populateEditDeckForm(deck) {
+  const nameInput = document.getElementById('editDeckName');
+  const subjectInput = document.getElementById('editDeckSubject');
+  const descriptionInput = document.getElementById('editDeckDescription');
+  if (!nameInput) return;
+  nameInput.value = deck.name || '';
+  subjectInput.value = deck.subject || '';
+  descriptionInput.value = deck.description || '';
+}
+
+function toggleEditDeckPanel() {
+  const panel = document.getElementById('editDeckPanel');
+  panel?.classList.toggle('hidden');
+}
+
+function hideEditDeckPanel() {
+  document.getElementById('editDeckPanel')?.classList.add('hidden');
+}
+
+function saveDeckEdits(event) {
+  event.preventDefault();
+  const deckId = getQueryParam('id');
+  const name = document.getElementById('editDeckName').value.trim();
+  const subject = document.getElementById('editDeckSubject').value.trim();
+  const description = document.getElementById('editDeckDescription').value.trim();
+  const status = document.getElementById('editDeckStatus');
+
+  if (!name) {
+    status.textContent = 'Ponle un nombre al deck.';
+    status.className = 'notice error';
+    status.classList.remove('hidden');
+    return;
+  }
+
+  const decks = getDecks().map(deck => deck.id === deckId ? { ...deck, name, subject, description, updatedAt: nowISO() } : deck);
+  saveDecks(decks);
+  status.textContent = 'Deck actualizado correctamente.';
+  status.className = 'notice success';
+  status.classList.remove('hidden');
+  renderDeckPage();
+  hideEditDeckPanel();
 }
 
 function renderDeckCards() {

@@ -196,3 +196,5 @@ body:has(.topbar){display:block}
   .flash-text{font-size:1.22rem}
   .flash-meta-grid,.two-col-responsive{grid-template-columns:1fr}
 }
+
+.full-span{grid-column:1/-1}
