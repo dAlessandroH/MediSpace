@@ -75,11 +75,12 @@ function getExamCompressionFactor(card) {
   return 1;
 }
 
-function getDueCardsForSession({ deckId = 'all', mode = 'all' } = {}) {
+function getDueCardsForSession({ deckId = 'all', mode = 'all', cardType = 'all' } = {}) {
   const cards = getCards();
   const settings = getSettings();
 
-  let filtered = cards.filter(card => deckId === 'all' || card.deckId === deckId);
+  let filtered = cards.filter(card => (deckId === 'all' || card.deckId === deckId));
+  if (cardType !== 'all') filtered = filtered.filter(card => (card.type || 'multiple_choice') === cardType);
 
   if (mode === 'rescue') {
     filtered = filtered.filter(card => (card.scheduling?.lapses || 0) >= settings.rescueThreshold);

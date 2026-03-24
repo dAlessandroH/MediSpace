@@ -21,14 +21,20 @@ function renderHome() {
   const target = settings.dailyTargetReviews || 80;
   const progress = Math.min(100, Math.round((todayLog.reviews / Math.max(1, target)) * 100));
   const pendingTasks = getPendingTasksCount();
+  const examCards = cards.filter(card => (card.type || 'multiple_choice') === 'multiple_choice');
+  const flashcards = cards.filter(card => (card.type || 'multiple_choice') === 'flashcard');
+  const dueExam = examCards.filter(card => isDueToday(card.scheduling?.dueDate)).length;
+  const dueFlash = flashcards.filter(card => isDueToday(card.scheduling?.dueDate)).length;
 
   document.getElementById('heroTitle').textContent = `${settings.userName || 'Tu'} plan de hoy`;
   document.getElementById('heroSubtitle').textContent = dueToday
-    ? `Hoy te conviene resolver ${dueToday} tarjetas pendientes. Empieza por lo vencido, luego rescata lo dificil y deja pocas nuevas.`
+    ? `Hoy te conviene resolver ${dueToday} tarjetas pendientes. Usa flashcards para memoria activa y simulador para entrenar examen.`
     : `Hoy no tienes deuda fuerte. Buen momento para repaso de rescate, nuevas tarjetas o preparar proximos examenes con calma.`;
 
   const stats = [
-    ['Por repasar hoy', dueToday, 'Las que ya te toca ver hoy o ya se vencieron.'],
+    ['Por repasar hoy', dueToday, 'La suma de todo lo que ya toca ver hoy.'],
+    ['Simulador hoy', dueExam, 'Preguntas de opcion multiple pendientes.'],
+    ['Flashcards hoy', dueFlash, 'Tarjetas frente-reverso listas para repasar.'],
     ['Aciertos globales', `${accuracy}%`, 'Que tanto aciertas cuando estudias.'],
     ['Ya bien asentadas', mastered, 'Tarjetas que ya aguantan mejor el paso del tiempo.'],
     ['Necesitan rescate', difficult, 'Tarjetas que se te han complicado varias veces.'],
@@ -69,6 +75,8 @@ function renderDecks(decks, cards, search = '') {
 
   container.innerHTML = filtered.map(deck => {
     const deckCards = cards.filter(card => card.deckId === deck.id);
+    const examCount = deckCards.filter(card => (card.type || 'multiple_choice') === 'multiple_choice').length;
+    const flashCount = deckCards.filter(card => (card.type || 'multiple_choice') === 'flashcard').length;
     const due = deckCards.filter(card => isDueToday(card.scheduling?.dueDate)).length;
     const difficultDeck = deckCards.filter(card => card.scheduling?.rescue).length;
     const masteredDeck = deckCards.filter(card => (card.scheduling?.status || '') === 'mature').length;
@@ -79,12 +87,15 @@ function renderDecks(decks, cards, search = '') {
         <div class="kv three-cols">
           <div><strong>${deckCards.length}</strong><br><span class="muted">Total</span></div>
           <div><strong>${due}</strong><br><span class="muted">Hoy</span></div>
+          <div><strong>${examCount}</strong><br><span class="muted">Examen</span></div>
+          <div><strong>${flashCount}</strong><br><span class="muted">Flash</span></div>
           <div><strong>${masteredDeck}</strong><br><span class="muted">Asentadas</span></div>
           <div><strong>${difficultDeck}</strong><br><span class="muted">Rescate</span></div>
         </div>
         <div class="item-actions">
           <a class="btn" href="deck.html?id=${encodeURIComponent(deck.id)}">Abrir deck</a>
-          <a class="btn primary" href="review.html?deck=${encodeURIComponent(deck.id)}">Repasar</a>
+          ${examCount ? `<a class="btn primary" href="review.html?deck=${encodeURIComponent(deck.id)}">Simulador</a>` : ''}
+          ${flashCount ? `<a class="btn success" href="flashcards.html?deck=${encodeURIComponent(deck.id)}">Flashcards</a>` : ''}
         </div>
       </div>
     `;
@@ -133,10 +144,14 @@ function renderExamUrgency(cards) {
 function renderTodayPlan(cards, todayLog, progress) {
   const due = cards.filter(card => isDueToday(card.scheduling?.dueDate)).length;
   const rescue = cards.filter(card => card.scheduling?.rescue).length;
+  const examDue = cards.filter(card => (card.type || 'multiple_choice') === 'multiple_choice' && isDueToday(card.scheduling?.dueDate)).length;
+  const flashDue = cards.filter(card => (card.type || 'multiple_choice') === 'flashcard' && isDueToday(card.scheduling?.dueDate)).length;
   const settings = getSettings();
   const urgentExam = getMostUrgentExam();
   const plan = [
-    `${due} tarjetas pendientes: empieza por aqui.`,
+    `${due} tarjetas pendientes hoy.`,
+    `${flashDue} en flashcards para memoria activa.`,
+    `${examDue} en simulador para entrenar decision de examen.`,
     `${Math.min(rescue, 15)} tarjetas de rescate: metelas despues si aun tienes gasolina.`,
     `${settings.dailyNewLimit} nuevas maximo: no te entierres vivo con material nuevo.`,
     `${todayLog.focusedMinutes} minutos de enfoque hoy · progreso ${progress}% de la meta diaria.`
@@ -149,7 +164,7 @@ function renderTodayPlan(cards, todayLog, progress) {
 
   const urgentTasks = getUpcomingTasks(3);
   if (urgentTasks.length) plan.push(`Tareas cercanas: ${urgentTasks.map(task => `${task.title} (${daysUntil(task.dueDate) === 0 ? 'hoy' : `${daysUntil(task.dueDate)} d`})`).join(', ')}`);
-  document.getElementById('todayPlanBox').innerHTML = plan.map(item => `<div class=\"item\"><p>${escapeHtml(item)}</p></div>`).join('');
+  document.getElementById('todayPlanBox').innerHTML = plan.map(item => `<div class="item"><p>${escapeHtml(item)}</p></div>`).join('');
 }
 
 function renderCalendar() {
@@ -177,7 +192,7 @@ function renderCalendar() {
           <div class="calendar-sub">${day.reviews} repasadas · ${day.focusedMinutes} min</div>
         </div>
         ${day.tasks.length ? `<div class="calendar-task">${escapeHtml(day.tasks[0].title || 'Tarea')}</div>` : ''}
-        ${day.exams.length ? `<div class=\"calendar-exam\">${escapeHtml(day.exams[0].subject || 'Examen')}</div>` : ''}
+        ${day.exams.length ? `<div class="calendar-exam">${escapeHtml(day.exams[0].subject || 'Examen')}</div>` : ''}
       </div>
     `;
   }).join('');
@@ -223,35 +238,32 @@ function renderPomodoroBox() {
   const sessions = getPomodoroHistory().filter(item => item.date === todayLocalKey()).length;
   document.getElementById('pomodoroTodayBox').innerHTML = `
     <div><strong>${todayFocus} min</strong><span class="muted">enfoque hoy</span></div>
-    <div><strong>${sessions}</strong><span class="muted">pomodoros cerrados</span></div>
+    <div><strong>${sessions}</strong><span class="muted">bloques cerrados</span></div>
   `;
 }
 
 function normalizePomodoroState(state) {
   const durations = getPomodoroDurations();
-  if (state.remainingSeconds === null || state.remainingSeconds === undefined) {
-    state.remainingSeconds = durations.focus;
+  if (!state || typeof state !== 'object') {
+    return { phase: 'focus', cycle: 1, isRunning: false, remainingSeconds: durations.focus, startedAt: null, plannedEndAt: null };
+  }
+  if (!state.remainingSeconds) {
+    state.remainingSeconds = state.phase === 'focus' ? durations.focus : state.phase === 'short' ? durations.short : durations.long;
   }
   return state;
 }
 
 function getPomodoroRemaining(state) {
   if (!state.isRunning || !state.plannedEndAt) return state.remainingSeconds || getPomodoroDurations().focus;
-  const diff = Math.max(0, Math.round((new Date(state.plannedEndAt).getTime() - Date.now()) / 1000));
-  return diff;
+  const seconds = Math.max(0, Math.round((new Date(state.plannedEndAt).getTime() - Date.now()) / 1000));
+  if (seconds <= 0) finishPomodoroPhase();
+  return seconds;
 }
 
 function restorePomodoroTicker() {
-  renderPomodoroBox();
   if (pomodoroTicker) clearInterval(pomodoroTicker);
   pomodoroTicker = setInterval(() => {
-    const state = normalizePomodoroState(getPomodoroState());
-    if (state.isRunning) {
-      const remaining = getPomodoroRemaining(state);
-      if (remaining <= 0) {
-        finishPomodoroPhase();
-      }
-    }
+    if (!document.getElementById('pomodoroTime')) return;
     renderPomodoroBox();
   }, 1000);
 }
@@ -261,8 +273,8 @@ function togglePomodoro() {
   if (state.isRunning) {
     state.remainingSeconds = getPomodoroRemaining(state);
     state.isRunning = false;
-    state.plannedEndAt = null;
     state.startedAt = null;
+    state.plannedEndAt = null;
   } else {
     state.isRunning = true;
     state.startedAt = nowISO();
@@ -328,7 +340,6 @@ function formatSeconds(totalSeconds) {
   const seconds = String(totalSeconds % 60).padStart(2, '0');
   return `${minutes}:${seconds}`;
 }
-
 
 function renderTasks() {
   const tasks = getUpcomingTasks(6);

@@ -17,7 +17,8 @@
     </div>
     <nav class="nav">
       <a class="nav-link" href="index.html">Inicio</a>
-      <a class="nav-link" href="review.html">Repasar</a>
+      <a class="nav-link" href="review.html">Simulador examen</a>
+      <a class="nav-link" href="flashcards.html">Flashcards</a>
       <a class="nav-link" href="import.html">Importar CSV</a>
       <a class="nav-link active" href="manual.html">Crear tarjeta</a>
       <a class="nav-link" href="dashboard.html">Progreso</a>
@@ -30,12 +31,19 @@
     <header class="page-header">
       <div>
         <h2>Crear tarjeta manual</h2>
-        <p>Ideal para convertir errores del día, apuntes rápidos o preguntas que sabes que deben volver más veces.</p>
+        <p>Puedes crear tanto preguntas de simulador como flashcards frente-reverso. Lo util es sacar de aqui errores rapidos o ideas que quieres fijar hoy mismo.</p>
       </div>
     </header>
 
     <section class="panel form-panel">
       <div class="form-grid three">
+        <label>
+          <span>Tipo de tarjeta</span>
+          <select id="cardTypeInput">
+            <option value="multiple_choice">Simulador de examen</option>
+            <option value="flashcard">Flashcard frente-reverso</option>
+          </select>
+        </label>
         <label>
           <span>Deck</span>
           <select id="deckSelect"></select>
@@ -44,54 +52,80 @@
           <span>Nuevo deck opcional</span>
           <input id="newDeckName" type="text" placeholder="Si quieres crear uno nuevo" />
         </label>
+      </div>
+
+      <div class="form-grid">
         <label>
-          <span>Materia</span>
+          <span>Materia del deck</span>
           <input id="newDeckSubject" type="text" placeholder="Ej. Anatomia" />
-        </label>
-      </div>
-
-      <label>
-        <span>Pregunta</span>
-        <textarea id="questionInput" rows="4" placeholder="Escribe la pregunta como si fueras a examinarte mañana"></textarea>
-      </label>
-
-      <div class="form-grid">
-        <label><span>Opcion A</span><input id="optionAInput" type="text" /></label>
-        <label><span>Opcion B</span><input id="optionBInput" type="text" /></label>
-      </div>
-      <div class="form-grid">
-        <label><span>Opcion C</span><input id="optionCInput" type="text" /></label>
-        <label><span>Opcion D</span><input id="optionDInput" type="text" /></label>
-      </div>
-
-      <div class="form-grid three">
-        <label>
-          <span>Respuesta correcta</span>
-          <select id="correctAnswerInput">
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-          </select>
         </label>
         <label>
           <span>Categoria</span>
           <input id="categoryInput" type="text" placeholder="Ej. Corazon" />
         </label>
+      </div>
+
+      <div id="examFields">
         <label>
-          <span>Prioridad</span>
-          <select id="priorityInput">
-            <option value="1">Baja</option>
-            <option value="2">Media</option>
-            <option value="3">Alta</option>
-          </select>
+          <span>Pregunta</span>
+          <textarea id="questionInput" rows="4" placeholder="Escribe la pregunta como si fueras a examinarte mañana"></textarea>
+        </label>
+
+        <div class="form-grid">
+          <label><span>Opcion A</span><input id="optionAInput" type="text" /></label>
+          <label><span>Opcion B</span><input id="optionBInput" type="text" /></label>
+        </div>
+        <div class="form-grid">
+          <label><span>Opcion C</span><input id="optionCInput" type="text" /></label>
+          <label><span>Opcion D</span><input id="optionDInput" type="text" /></label>
+        </div>
+
+        <div class="form-grid three">
+          <label>
+            <span>Respuesta correcta</span>
+            <select id="correctAnswerInput">
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </label>
+          <label>
+            <span>Prioridad</span>
+            <select id="priorityInput">
+              <option value="1">Baja</option>
+              <option value="2">Media</option>
+              <option value="3">Alta</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          <span>Explicacion</span>
+          <textarea id="explanationInput" rows="4" placeholder="Explica por que la respuesta es correcta"></textarea>
         </label>
       </div>
 
-      <label>
-        <span>Explicacion</span>
-        <textarea id="explanationInput" rows="4" placeholder="Explica por que la respuesta es correcta"></textarea>
-      </label>
+      <div id="flashcardFields" class="hidden">
+        <label>
+          <span>Frente</span>
+          <textarea id="frontInput" rows="4" placeholder="Concepto, pregunta corta o estructura que quieres recordar"></textarea>
+        </label>
+        <label>
+          <span>Reverso</span>
+          <textarea id="backInput" rows="5" placeholder="Definicion, explicacion o respuesta que quieres ver al voltear"></textarea>
+        </label>
+        <div class="form-grid">
+          <label>
+            <span>Prioridad</span>
+            <select id="flashPriorityInput">
+              <option value="1">Baja</option>
+              <option value="2" selected>Media</option>
+              <option value="3">Alta</option>
+            </select>
+          </label>
+        </div>
+      </div>
 
       <div class="toolbar wrap">
         <button class="btn primary" id="saveCardBtn" type="button">Guardar tarjeta</button>

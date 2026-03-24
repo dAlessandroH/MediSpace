@@ -17,8 +17,10 @@
     </div>
     <nav class="nav">
       <a class="nav-link" href="index.html">Inicio</a>
-      <a class="nav-link" href="review.html">Repasar</a>
+      <a class="nav-link" href="review.html">Simulador examen</a>
+      <a class="nav-link" href="flashcards.html">Flashcards</a>
       <a class="nav-link active" href="import.html">Importar CSV</a>
+      <a class="nav-link" href="manual.html">Crear tarjeta</a>
       <a class="nav-link" href="dashboard.html">Progreso</a>
       <a class="nav-link" href="planner.html">Plan y calendario</a>
       <a class="nav-link" href="settings.html">Ajustes</a>
@@ -29,26 +31,40 @@
     <header class="page-header">
       <div>
         <h2>Importar deck desde CSV</h2>
-        <p>Compatible con tu formato: pregunta, opcion_a, opcion_b, opcion_c, opcion_d, respuesta, categoria, explicacion</p>
+        <p>Puedes importar dos formatos distintos: simulador de examen y flashcards frente-reverso. Ambos entran a la misma plataforma, pero cada uno se estudia en su pantalla.</p>
       </div>
     </header>
 
     <section class="panel form-panel">
-      <div class="form-grid">
+      <div class="two-col-responsive">
+        <label>
+          <span>Tipo de importacion</span>
+          <select id="importType">
+            <option value="exam">Simulador de examen</option>
+            <option value="flashcard">Flashcards frente-reverso</option>
+          </select>
+        </label>
         <label>
           <span>Nombre del deck</span>
           <input type="text" id="deckName" placeholder="Ej. Corazon y mediastino" />
         </label>
+      </div>
+
+      <div class="form-grid">
         <label>
           <span>Materia</span>
           <input type="text" id="deckSubject" placeholder="Ej. Anatomia" />
         </label>
+        <label>
+          <span>Archivo CSV</span>
+          <input type="file" id="csvFile" accept=".csv,text/csv" />
+        </label>
       </div>
 
-      <label>
-        <span>Archivo CSV</span>
-        <input type="file" id="csvFile" accept=".csv,text/csv" />
-      </label>
+      <div class="notice info" id="formatHelp">
+        Formato examen: pregunta, opcion_a, opcion_b, opcion_c, opcion_d, respuesta, categoria, explicacion.<br>
+        Formato flashcards: frente, reverso, categoria (categoria es opcional).
+      </div>
 
       <div class="toolbar wrap">
         <button class="btn primary" id="importBtn" type="button">Importar deck</button>

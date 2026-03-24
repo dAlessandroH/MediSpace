@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Repaso - MedSpace</title>
+  <title>Simulador de examen - MedSpace</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -12,13 +12,14 @@
       <div class="brand-mark">M</div>
       <div>
         <h1>MedSpace</h1>
-        <p>Sesion diaria</p>
+        <p>Simulador de examen</p>
       </div>
     </div>
 
     <nav class="nav">
       <a class="nav-link" href="index.html">Inicio</a>
-      <a class="nav-link active" href="review.html">Repasar</a>
+      <a class="nav-link active" href="review.html">Simulador examen</a>
+      <a class="nav-link" href="flashcards.html">Flashcards</a>
       <a class="nav-link" href="import.html">Importar CSV</a>
       <a class="nav-link" href="manual.html">Crear tarjeta</a>
       <a class="nav-link" href="dashboard.html">Progreso</a>
@@ -44,8 +45,8 @@
   <main class="main">
     <header class="page-header">
       <div>
-        <h2>Repaso inteligente</h2>
-        <p id="sessionSubtitle">Carga una sesion y responde. Aqui es donde la memoria deja de improvisar.</p>
+        <h2>Simulador de examen</h2>
+        <p id="sessionSubtitle">Aqui practicas preguntas de opcion multiple. Marca una opcion, revela la respuesta y luego guarda como se sintio recordarla.</p>
       </div>
       <div class="header-actions">
         <span class="pill" id="progressText">0 / 0</span>
@@ -54,7 +55,7 @@
 
     <section class="panel" id="emptyState">
       <h3>No hay tarjetas para esta sesion</h3>
-      <p>Prueba con otro deck, cambia el modo o importa un CSV.</p>
+      <p>Prueba con otro deck, cambia el modo o importa un CSV de examen.</p>
       <div class="toolbar wrap">
         <a class="btn primary" href="import.html">Importar deck</a>
         <a class="btn" href="index.html">Volver al inicio</a>

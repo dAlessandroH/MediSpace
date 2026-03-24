@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   renderDeckOptions();
   document.getElementById('saveCardBtn')?.addEventListener('click', saveManualCard);
+  document.getElementById('cardTypeInput')?.addEventListener('change', toggleManualFields);
+  toggleManualFields();
 });
 
 function renderDeckOptions() {
@@ -11,23 +13,19 @@ function renderDeckOptions() {
   `).join('');
 }
 
+function toggleManualFields() {
+  const type = document.getElementById('cardTypeInput').value;
+  document.getElementById('examFields').classList.toggle('hidden', type !== 'multiple_choice');
+  document.getElementById('flashcardFields').classList.toggle('hidden', type !== 'flashcard');
+}
+
 function saveManualCard() {
   try {
+    const type = document.getElementById('cardTypeInput').value;
     const deckIdFromSelect = document.getElementById('deckSelect').value;
     const newDeckName = document.getElementById('newDeckName').value.trim();
     const newDeckSubject = document.getElementById('newDeckSubject').value.trim();
-    const question = document.getElementById('questionInput').value.trim();
-    const optionA = document.getElementById('optionAInput').value.trim();
-    const optionB = document.getElementById('optionBInput').value.trim();
-    const optionC = document.getElementById('optionCInput').value.trim();
-    const optionD = document.getElementById('optionDInput').value.trim();
-    const correctAnswer = document.getElementById('correctAnswerInput').value;
     const category = document.getElementById('categoryInput').value.trim() || 'General';
-    const priority = Number(document.getElementById('priorityInput').value || 2);
-    const explanation = document.getElementById('explanationInput').value.trim();
-
-    if (!question) throw new Error('Escribe la pregunta.');
-    if (!optionA || !optionB || !optionC || !optionD) throw new Error('Completa las 4 opciones.');
 
     let deckId = deckIdFromSelect;
     const decks = getDecks();
@@ -47,38 +45,58 @@ function saveManualCard() {
     }
 
     const cards = getCards();
-    cards.push({
-      id: uid('card'),
-      deckId,
-      type: 'multiple_choice',
-      question,
-      optionA,
-      optionB,
-      optionC,
-      optionD,
-      correctAnswer,
-      explanation,
-      category,
-      tags: [],
-      priority,
-      scheduling: {
-        repetitions: 0,
-        easeFactor: 2.5,
-        intervalDays: 0,
-        dueDate: nowISO(),
-        lastReviewedAt: null,
-        lapses: 0,
-        status: 'new',
-        rescue: false
-      },
-      stats: {
-        totalReviews: 0,
-        correctReviews: 0,
-        wrongReviews: 0,
-        lastRating: null
-      },
-      createdAt: nowISO()
-    });
+
+    if (type === 'flashcard') {
+      const front = document.getElementById('frontInput').value.trim();
+      const back = document.getElementById('backInput').value.trim();
+      const priority = Number(document.getElementById('flashPriorityInput').value || 2);
+      if (!front || !back) throw new Error('Completa frente y reverso de la flashcard.');
+      cards.push({
+        id: uid('card'),
+        deckId,
+        type: 'flashcard',
+        front,
+        back,
+        question: front,
+        answer: back,
+        explanation: back,
+        category,
+        tags: [],
+        priority,
+        scheduling: defaultScheduling(),
+        stats: defaultStats(),
+        createdAt: nowISO()
+      });
+    } else {
+      const question = document.getElementById('questionInput').value.trim();
+      const optionA = document.getElementById('optionAInput').value.trim();
+      const optionB = document.getElementById('optionBInput').value.trim();
+      const optionC = document.getElementById('optionCInput').value.trim();
+      const optionD = document.getElementById('optionDInput').value.trim();
+      const correctAnswer = document.getElementById('correctAnswerInput').value;
+      const priority = Number(document.getElementById('priorityInput').value || 2);
+      const explanation = document.getElementById('explanationInput').value.trim();
+      if (!question) throw new Error('Escribe la pregunta.');
+      if (!optionA || !optionB || !optionC || !optionD) throw new Error('Completa las 4 opciones.');
+      cards.push({
+        id: uid('card'),
+        deckId,
+        type: 'multiple_choice',
+        question,
+        optionA,
+        optionB,
+        optionC,
+        optionD,
+        correctAnswer,
+        explanation,
+        category,
+        tags: [],
+        priority,
+        scheduling: defaultScheduling(),
+        stats: defaultStats(),
+        createdAt: nowISO()
+      });
+    }
 
     saveCards(cards);
     showManualStatus('Tarjeta guardada correctamente.', 'success');
@@ -88,12 +106,36 @@ function saveManualCard() {
   }
 }
 
+function defaultScheduling() {
+  return {
+    repetitions: 0,
+    easeFactor: 2.5,
+    intervalDays: 0,
+    dueDate: nowISO(),
+    lastReviewedAt: null,
+    lapses: 0,
+    status: 'new',
+    rescue: false
+  };
+}
+
+function defaultStats() {
+  return {
+    totalReviews: 0,
+    correctReviews: 0,
+    wrongReviews: 0,
+    lastRating: null
+  };
+}
+
 function clearForm() {
-  ['questionInput','optionAInput','optionBInput','optionCInput','optionDInput','categoryInput','explanationInput'].forEach(id => {
-    document.getElementById(id).value = '';
+  ['questionInput','optionAInput','optionBInput','optionCInput','optionDInput','categoryInput','explanationInput','frontInput','backInput'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
   });
   document.getElementById('correctAnswerInput').value = 'A';
   document.getElementById('priorityInput').value = '2';
+  document.getElementById('flashPriorityInput').value = '2';
 }
 
 function showManualStatus(message, type) {

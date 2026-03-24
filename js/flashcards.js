@@ -1,16 +1,14 @@
 let sessionCards = [];
 let currentIndex = 0;
-let selectedOption = null;
-let answerRevealed = false;
+let isFlipped = false;
 let sessionStart = null;
 
-const reviewPanel = document.getElementById('reviewPanel');
+const flashPanel = document.getElementById('flashPanel');
 const emptyState = document.getElementById('emptyState');
 const progressText = document.getElementById('progressText');
-const revealActions = document.getElementById('revealActions');
 const ratingActions = document.getElementById('ratingActions');
-const answerBlock = document.getElementById('answerBlock');
 const ratingHelp = document.getElementById('ratingHelp');
+const board = document.getElementById('flashcardBoard');
 
 const ratingLabels = {
   again: 'Otra vez',
@@ -43,7 +41,8 @@ function setupFilters() {
 
 function bindControls() {
   document.getElementById('startSessionBtn')?.addEventListener('click', loadSession);
-  document.getElementById('showAnswerBtn')?.addEventListener('click', revealAnswer);
+  document.getElementById('flipBtn')?.addEventListener('click', toggleFlip);
+  board?.addEventListener('click', toggleFlip);
   document.querySelectorAll('[data-rating]').forEach(button => {
     button.addEventListener('click', () => registerReview(button.dataset.rating));
   });
@@ -53,8 +52,12 @@ function bindControls() {
 function handleHotkeys(event) {
   if (event.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
   if (!sessionCards[currentIndex]) return;
-  if (event.key.toLowerCase() === 'm') revealAnswer();
-  if (!answerRevealed) return;
+  if (event.code === 'Space') {
+    event.preventDefault();
+    toggleFlip();
+    return;
+  }
+  if (!isFlipped) return;
   if (event.key === '1') registerReview('again');
   if (event.key === '2') registerReview('hard');
   if (event.key === '3') registerReview('good');
@@ -64,91 +67,56 @@ function handleHotkeys(event) {
 function loadSession() {
   const deckId = document.getElementById('deckFilter').value;
   const mode = document.getElementById('modeFilter').value;
-  sessionCards = getDueCardsForSession({ deckId, mode, cardType: 'multiple_choice' });
+  sessionCards = getDueCardsForSession({ deckId, mode, cardType: 'flashcard' });
   currentIndex = 0;
   renderCurrentCard();
 }
 
 function renderCurrentCard() {
-  selectedOption = null;
-  answerRevealed = false;
+  isFlipped = false;
   sessionStart = Date.now();
+  board.classList.remove('is-flipped');
+  ratingActions.classList.add('hidden');
+  ratingHelp.classList.add('hidden');
 
   if (!sessionCards.length || currentIndex >= sessionCards.length) {
-    reviewPanel.classList.add('hidden');
+    flashPanel.classList.add('hidden');
     emptyState.classList.remove('hidden');
     progressText.textContent = '0 / 0';
-    document.getElementById('sessionSubtitle').textContent = 'No hay tarjetas pendientes para esta combinacion.';
+    document.getElementById('sessionSubtitle').textContent = 'No hay flashcards pendientes para esta combinacion.';
     return;
   }
 
   emptyState.classList.add('hidden');
-  reviewPanel.classList.remove('hidden');
+  flashPanel.classList.remove('hidden');
 
   const card = sessionCards[currentIndex];
   const deck = getDeckById(card.deckId);
 
-  document.getElementById('sessionSubtitle').textContent = `${sessionCards.length} tarjetas en la sesion actual. Atajo: M muestra respuesta, 1-4 guardan la calificacion.`;
+  document.getElementById('sessionSubtitle').textContent = `${sessionCards.length} flashcards en la sesion. Piensa, voltea y guarda la sensacion real del recuerdo.`;
   progressText.textContent = `${currentIndex + 1} / ${sessionCards.length}`;
   document.getElementById('deckNameTag').textContent = deck?.name || 'Deck';
   document.getElementById('cardCategory').textContent = card.category || 'General';
   document.getElementById('cardPriority').textContent = `Prioridad ${card.priority || 1}`;
   document.getElementById('nextInfoTag').textContent = `Tropiezos: ${card.scheduling?.lapses || 0}`;
-  document.getElementById('questionText').innerHTML = `${escapeHtml(card.question)}<small>Marca la opcion, muestra la respuesta y luego califica como se sintio el recuerdo.</small>`;
-  document.getElementById('correctAnswerText').textContent = `${card.correctAnswer}. ${getAnswerText(card, card.correctAnswer)}`;
-  document.getElementById('explanationText').textContent = card.explanation || 'Sin explicacion disponible.';
-
-  answerBlock.classList.add('hidden');
-  revealActions.classList.remove('hidden');
-  ratingActions.classList.add('hidden');
-  ratingHelp.classList.add('hidden');
-
-  renderOptions(card);
+  document.getElementById('frontText').textContent = card.front || card.question || 'Sin frente';
+  document.getElementById('backText').textContent = card.back || card.answer || card.explanation || 'Sin reverso';
 }
 
-function renderOptions(card) {
-  const optionsContainer = document.getElementById('optionsContainer');
-  const options = [
-    ['A', card.optionA],
-    ['B', card.optionB],
-    ['C', card.optionC],
-    ['D', card.optionD]
-  ];
-
-  optionsContainer.innerHTML = options.map(([key, text]) => `
-    <button class="option-btn" data-key="${key}" type="button">
-      <strong>${key}.</strong> ${escapeHtml(text || '')}
-    </button>
-  `).join('');
-
-  optionsContainer.querySelectorAll('.option-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      if (answerRevealed) return;
-      selectedOption = button.dataset.key;
-      optionsContainer.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
-      button.classList.add('selected');
-    });
-  });
-}
-
-function revealAnswer() {
+function toggleFlip() {
   const card = sessionCards[currentIndex];
   if (!card) return;
-  answerRevealed = true;
-  answerBlock.classList.remove('hidden');
-  revealActions.classList.add('hidden');
-  ratingActions.classList.remove('hidden');
-  ratingHelp.classList.remove('hidden');
-  ratingHelp.textContent = '1 = Otra vez, 2 = Dificil, 3 = Bien, 4 = Facil. Lo que marques se guarda y decide cuando vuelve.';
-
-  updateRatingPreviews(card);
-
-  document.querySelectorAll('.option-btn').forEach(button => {
-    const key = button.dataset.key;
-    button.disabled = true;
-    if (key === card.correctAnswer) button.classList.add('correct');
-    if (selectedOption && key === selectedOption && selectedOption !== card.correctAnswer) button.classList.add('wrong');
-  });
+  isFlipped = !isFlipped;
+  board.classList.toggle('is-flipped', isFlipped);
+  if (isFlipped) {
+    updateRatingPreviews(card);
+    ratingActions.classList.remove('hidden');
+    ratingHelp.classList.remove('hidden');
+    ratingHelp.textContent = 'Al marcar una opcion, se guarda tu decision y se reprograma la siguiente vez que aparecera esta flashcard.';
+  } else {
+    ratingActions.classList.add('hidden');
+    ratingHelp.classList.add('hidden');
+  }
 }
 
 function updateRatingPreviews(card) {
@@ -168,11 +136,11 @@ function registerReview(rating) {
     const cards = getCards();
     const reviews = getReviews();
     const cardIndex = cards.findIndex(item => item.id === card.id);
-    if (cardIndex === -1) throw new Error('No se encontro la tarjeta en almacenamiento.');
+    if (cardIndex === -1) throw new Error('No se encontro la flashcard en almacenamiento.');
 
     const before = { ...(cards[cardIndex].scheduling || {}) };
     const after = calculateNextSchedule(before, rating, cards[cardIndex].priority || 1, cards[cardIndex]);
-    const wasCorrect = selectedOption === cards[cardIndex].correctAnswer;
+    const wasCorrect = rating !== 'again';
 
     cards[cardIndex].scheduling = after;
     cards[cardIndex].stats = cards[cardIndex].stats || { totalReviews: 0, correctReviews: 0, wrongReviews: 0, lastRating: null };
@@ -187,8 +155,8 @@ function registerReview(rating) {
       reviewedAt: nowISO(),
       rating,
       wasCorrect,
-      selectedOption,
-      correctAnswer: cards[cardIndex].correctAnswer,
+      selectedOption: null,
+      correctAnswer: null,
       responseTimeMs: Date.now() - sessionStart,
       intervalBefore: before.intervalDays || 0,
       intervalAfter: after.intervalDays || 0,
@@ -212,14 +180,6 @@ function registerReview(rating) {
     alert(error.message || 'Ocurrio un error al guardar la revision.');
     console.error(error);
   }
-}
-
-function getAnswerText(card, key) {
-  if (key === 'A') return card.optionA || '';
-  if (key === 'B') return card.optionB || '';
-  if (key === 'C') return card.optionC || '';
-  if (key === 'D') return card.optionD || '';
-  return '';
 }
 
 function humanInterval(intervalDays, dueDate, rating) {

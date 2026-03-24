@@ -9,9 +9,13 @@ function renderDashboard() {
   const accuracy = calculateAccuracy(cards);
   const mastered = getFriendlyMasteredCount(cards);
   const todayLog = getTodayLog();
+  const examCards = cards.filter(card => (card.type || 'multiple_choice') === 'multiple_choice');
+  const flashCards = cards.filter(card => (card.type || 'multiple_choice') === 'flashcard');
 
   document.getElementById('dashboardStats').innerHTML = [
     ['Tarjetas totales', cards.length, 'Todo lo que tienes cargado.'],
+    ['Simulador', examCards.length, 'Preguntas de opcion multiple.'],
+    ['Flashcards', flashCards.length, 'Tarjetas frente-reverso.'],
     ['Tocan hoy', dueToday, 'Tu deuda de hoy. Esto manda primero.'],
     ['Ya bien asentadas', mastered, 'Lo que ya recuerdas con mayor estabilidad.'],
     ['Todavia fragiles', difficult, 'Lo que te sigue tropezando y pide rescate.'],
@@ -38,6 +42,8 @@ function renderDashboard() {
         const correct = subjectCards.reduce((sum, card) => sum + (card.stats?.correctReviews || 0), 0);
         const totalReviews = subjectCards.reduce((sum, card) => sum + (card.stats?.totalReviews || 0), 0);
         const subjectAccuracy = totalReviews ? Math.round((correct / totalReviews) * 100) : 0;
+        const examCount = subjectCards.filter(card => (card.type || 'multiple_choice') === 'multiple_choice').length;
+        const flashCount = subjectCards.filter(card => (card.type || 'multiple_choice') === 'flashcard').length;
         return `
           <div class="item">
             <h3>${escapeHtml(name)}</h3>
@@ -46,6 +52,8 @@ function renderDashboard() {
               <div><strong>${stats.due}</strong><br><span class="muted">hoy</span></div>
               <div><strong>${stats.difficult}</strong><br><span class="muted">fragiles</span></div>
               <div><strong>${stats.dominated}</strong><br><span class="muted">asentadas</span></div>
+              <div><strong>${examCount}</strong><br><span class="muted">examen</span></div>
+              <div><strong>${flashCount}</strong><br><span class="muted">flash</span></div>
               <div><strong>${subjectAccuracy}%</strong><br><span class="muted">aciertos</span></div>
             </div>
           </div>
@@ -58,11 +66,13 @@ function renderDashboard() {
     ? recent.map(review => {
         const card = cards.find(item => item.id === review.cardId);
         const map = { again: 'Otra vez', hard: 'Dificil', good: 'Bien', easy: 'Facil' };
+        const type = (card?.type || 'multiple_choice') === 'flashcard' ? 'Flashcard' : 'Examen';
+        const text = (card?.type || 'multiple_choice') === 'flashcard' ? (card?.front || card?.question || '') : (card?.question || '');
         return `
           <div class="item">
-            <h4>${escapeHtml(card?.question?.slice(0, 80) || 'Tarjeta eliminada')}</h4>
-            <p>${formatDateTime(review.reviewedAt)}</p>
-            <p>Marcaste <strong>${map[review.rating] || review.rating}</strong> · ${review.wasCorrect ? 'respuesta correcta' : 'respuesta incorrecta'}</p>
+            <h4>${escapeHtml(text.slice(0, 80) || 'Tarjeta eliminada')}</h4>
+            <p>${formatDateTime(review.reviewedAt)} · ${type}</p>
+            <p>Marcaste <strong>${map[review.rating] || review.rating}</strong> · ${review.wasCorrect ? 'recuerdo correcto' : 'te costo recordarla'}</p>
           </div>
         `;
       }).join('')

@@ -1,25 +1,17 @@
-MedSpace - version personal para Alessandro
+MedSpace completo
 
-Que incluye en esta version:
-- Repeticion espaciada centrada en estudio real diario
-- Guardado local completo en localStorage
-- Importacion de CSV compatible con tu simulador
-- Sesion de repaso con guardado de Otra vez / Dificil / Bien / Facil
-- Reaparicion inmediata de tarjetas marcadas como Otra vez
-- Pomodoro integrado con pausas y registro de minutos de enfoque
-- Calendario visual de carga de estudio
-- Planificador de examenes para apretar el repaso cuando se acercan
-- Dashboard con lenguaje mas claro
-- Respaldo JSON para mover tu progreso entre dispositivos
+Esta version incluye:
+- Simulador de examen (CSV tipo pregunta/opciones)
+- Flashcards frente-reverso (CSV tipo frente/reverso)
+- Repeticion espaciada local con localStorage
+- Pomodoro
+- Calendario, examenes y tareas
+- Respaldo JSON
 
-Uso recomendado:
-1. Carga tus decks desde Importar
-2. Ve a Plan y calendario y agrega tus examenes
-3. Ajusta meta diaria y pomodoro en Ajustes
-4. Usa Repasar todos los dias, primero en modo Focus
-5. Haz backup JSON antes de cambiar de dispositivo
+CSV examen:
+pregunta,opcion_a,opcion_b,opcion_c,opcion_d,respuesta,categoria,explicacion
 
-Nota:
-Al usar localStorage, cada navegador y dispositivo guarda su propia copia local.
+CSV flashcards:
+frente,reverso,categoria
 
-- Apartado de tareas y pendientes con fecha de entrega.
+Abre index.html en el navegador.

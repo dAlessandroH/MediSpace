@@ -17,8 +17,10 @@ function renderDeckPage() {
     return;
   }
 
+  const examCount = cards.filter(card => (card.type || 'multiple_choice') === 'multiple_choice').length;
+  const flashCount = cards.filter(card => (card.type || 'multiple_choice') === 'flashcard').length;
   document.getElementById('deckTitle').textContent = deck.name;
-  document.getElementById('deckMeta').textContent = `${deck.subject || 'Sin materia'} · ${cards.length} tarjetas · creado ${formatDate(deck.createdAt)}`;
+  document.getElementById('deckMeta').textContent = `${deck.subject || 'Sin materia'} · ${cards.length} tarjetas · ${examCount} examen · ${flashCount} flashcards · creado ${formatDate(deck.createdAt)}`;
   renderDeckCards();
 }
 
@@ -27,22 +29,31 @@ function renderDeckCards() {
   const query = document.getElementById('searchInput').value.trim().toLowerCase();
   const cards = getCards()
     .filter(card => card.deckId === deckId)
-    .filter(card => !query || `${card.question} ${card.category}`.toLowerCase().includes(query));
+    .filter(card => {
+      const text = `${card.question || ''} ${card.front || ''} ${card.category || ''} ${card.back || ''}`.toLowerCase();
+      return !query || text.includes(query);
+    });
 
   const target = document.getElementById('deckCards');
   target.innerHTML = cards.length
-    ? cards.map(card => `
-        <div class="item">
-          <h4>${escapeHtml(card.question)}</h4>
-          <p>${escapeHtml(card.category || 'General')} · ${card.scheduling?.status || 'new'} · lapses ${card.scheduling?.lapses || 0}</p>
-          <p>Proximo repaso: ${formatDate(card.scheduling?.dueDate)}</p>
-          <div class="chip-row">
-            <span class="tag">Ultimo rating: ${escapeHtml(card.stats?.lastRating || 'ninguno')}</span>
-            <span class="tag">Correctas: ${card.stats?.correctReviews || 0}</span>
-            <span class="tag">Incorrectas: ${card.stats?.wrongReviews || 0}</span>
+    ? cards.map(card => {
+        const type = (card.type || 'multiple_choice') === 'flashcard' ? 'Flashcard' : 'Examen';
+        const body = (card.type || 'multiple_choice') === 'flashcard'
+          ? `<p><strong>Frente:</strong> ${escapeHtml(card.front || card.question || '')}</p><p><strong>Reverso:</strong> ${escapeHtml((card.back || card.answer || '').slice(0, 240))}</p>`
+          : `<h4>${escapeHtml(card.question || '')}</h4><p>${escapeHtml(card.category || 'General')} · ${card.scheduling?.status || 'new'} · lapses ${card.scheduling?.lapses || 0}</p><p>Respuesta: ${escapeHtml(card.correctAnswer || '')}</p>`;
+        return `
+          <div class="item">
+            <div class="chip-row"><span class="tag type-badge">${type}</span><span class="tag">Prioridad ${card.priority || 1}</span></div>
+            ${body}
+            <p>Proximo repaso: ${formatDate(card.scheduling?.dueDate)}</p>
+            <div class="chip-row">
+              <span class="tag">Ultimo rating: ${escapeHtml(card.stats?.lastRating || 'ninguno')}</span>
+              <span class="tag">Correctas: ${card.stats?.correctReviews || 0}</span>
+              <span class="tag">Incorrectas: ${card.stats?.wrongReviews || 0}</span>
+            </div>
           </div>
-        </div>
-      `).join('')
+        `;
+      }).join('')
     : '<div class="item"><p>No hay tarjetas que coincidan con la busqueda.</p></div>';
 }
 
